@@ -1,0 +1,31 @@
+language: python
+
+python:
+  - "2.7"
+
+env:
+  # exclude tests of modules which doesn't depends on sale_stock
+  - VERSION="7.0" ODOO_REPO="odoo/odoo" EXCLUDE="last_sale_price"
+  - VERSION="7.0" ODOO_REPO="odoo/odoo" INCLUDE="last_sale_price"
+
+  - VERSION="7.0" ODOO_REPO="OCA/OCB" EXCLUDE="last_sale_price"
+  - VERSION="7.0" ODOO_REPO="OCA/OCB" INCLUDE="last_sale_price"
+
+virtualenv:
+  system_site_packages: true
+
+before_install:
+  - git clone https://github.com/OCA/product-attribute $HOME/product-attribute -b ${VERSION}
+  - git clone https://github.com/OCA/purchase-workflow $HOME/purchase-workflow -b ${VERSION}
+  - git clone https://github.com/OCA/server-tools.git $HOME/server-tools -b ${VERSION}
+
+install:
+  - git clone https://github.com/OCA/maintainer-quality-tools.git ${HOME}/maintainer-quality-tools
+  - export PATH=${HOME}/maintainer-quality-tools/travis:${PATH}
+  - travis_install_nightly
+
+script:
+  - travis_run_tests
+
+after_success:
+  coveralls

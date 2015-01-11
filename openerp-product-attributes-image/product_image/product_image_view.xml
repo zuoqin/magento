@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record id="view_product_image_form" model="ir.ui.view">
+            <field name="name">product.image.form</field>
+            <field name="model">product.image</field>
+            <field name="arch" type="xml">
+                <form string="Product Images" version="7.0">
+                    <group col="6" colspan="6">
+                        <field name="name" colspan="4"/>
+                        <field name="extension"/>
+                    </group>
+                    <notebook>
+                        <page string="Image" name="image">
+                            <group col="4" colspan="4" name="link">
+                                <field name="label" colspan="4"/>
+                                <field name="sequence"/>
+                                <field name="link"/>
+                                <field name="url" widget="url" colspan="4"
+                                       attrs="{'invisible': [('link', '=', False)]}"/>
+                                <p class="oe_grey oe_inline" colspan="4">
+Edit an image below or click on 'link' above to add an image with an url
+                                </p>
+                            </group>
+                        </page>
+                        <page string="Comments">
+                            <group>
+                                <field name="comments" nolabel="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                    <field name="file" widget="image" nolabel="1"
+                           filename="name" colspan="6"
+                           attrs="{'readonly': [('link', '=', True)]}"/>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_product_image_tree" model="ir.ui.view">
+            <field name="name">product.images.tree</field>
+            <field name="model">product.image</field>
+            <field name="arch" type="xml">
+                <tree string="Product Images">
+                    <field name="sequence"/>
+                    <field name="name" select="1"/>
+                    <field name="comments" select="2"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_product_form_img_inh" model="ir.ui.view">
+            <field name="name">product.product.images</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view" />
+            <field name="arch" type="xml">
+                <xpath expr="/form/sheet/notebook" position="inside">
+                    <page string="Images">
+                        <field name="image_ids" nolabel="1" />
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>

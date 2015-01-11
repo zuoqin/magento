@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+<!--
+  Module for OpenERP
+  The licence is in the file __openerp__.py
+  @author Chafique Delli <chafique.delli@akretion.com>
+-->
+
+        <!-- PRODUCT TEMPLATE -->
+        <record id="product_variant_multi_product_display_form_view" model="ir.ui.view">
+            <field name="name">product.variant.multi.product.display.form</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product_variant_generator.product_variant_multi_product_template_form_view" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='do_not_update_variant']/.." position="after">
+                    <group string="Displays" colspan="1" col="4" attrs="{'invisible':[('is_multi_variants','=',False)]}">
+                        <field name="generate_main_display"/>
+                        <field name="dimension_ids" invisible="1"/>
+                        <field name="main_dim_id" domain="[('id', 'in', dimension_ids and dimension_ids[0][2])]"/>
+                        <field name="display_variant_ids" nolabel="1" colspan="4">
+                            <tree string="Display Variants">
+                                <field name="code" />
+                                <field name="name" />
+                                <field name="variants" string="Dimension Values" />
+                            </tree>
+                        </field>
+                    </group>
+                </xpath>
+                <field name="variant_ids" position="replace">
+                    <field name="product_variant_ids" nolabel="1" colspan="4">
+                        <tree string="Product Variants">
+                            <field name="code" />
+                            <field name="name" />
+                            <field name="variants" string="Dimension Values" />
+                        </tree>
+                    </field>
+                </field>
+            </field>
+        </record>
+
+    </data>
+</openerp>
