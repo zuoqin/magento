@@ -178,7 +178,7 @@
 
 
         <record id="view_requeue_job" model="ir.ui.view">
-            <field name="name">Requeue Jobs</field>
+            <field name="name">Requeue Jobs111</field>
             <field name="model">queue.requeue.job</field>
             <field name="arch" type="xml">
                 <form string="Requeue Jobs" version="7.0">
@@ -194,6 +194,26 @@
             </field>
         </record>
 
+
+        <record id="view_done_job" model="ir.ui.view">
+            <field name="name">Set to 'Done'</field>
+            <field name="model">queue.requeue.job</field>
+            <field name="arch" type="xml">
+                <form string="Set to 'Done'" version="7.0">
+                    <group string="The selected jobs will be set to 'Done'.">
+                        <field name="job_ids" nolabel="1"/>
+                    </group>
+                    <footer>
+                        <button name="done" string="Set to 'Done'" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+
+
         <record id="action_requeue_job" model="ir.actions.act_window">
             <field name="name">Requeue Jobs</field>
             <field name="res_model">queue.requeue.job</field>
@@ -205,12 +225,33 @@
 
         <record id="action_requeue_job_values" model="ir.values">
             <field name="model_id" ref="model_queue_job" />
-            <field name="name">Requeue Jobs</field>
+            <field name="name">Requeue Jobs33333</field>
             <field name="key2">client_action_multi</field>
             <field name="value" eval="'ir.actions.act_window,' + str(ref('action_requeue_job'))"/>
             <field name="key">action</field>
             <field name="model">queue.job</field>
         </record>
+
+
+        <record id="action_done_job" model="ir.actions.act_window">
+            <field name="name">Set Jobs to 'Done'</field>
+            <field name="res_model">queue.done.job</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_done_job"/>
+            <field name="target">new</field>
+        </record>
+
+
+        <record id="action_done_job_values" model="ir.values">
+            <field name="model_id" ref="model_queue_job" />
+            <field name="name">Set Jobs to 'Done'</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.act_window,' + str(ref('action_done_job'))"/>
+            <field name="key">action</field>
+            <field name="model">queue.job</field>
+        </record>
+
 
     </data>
 </openerp>

@@ -137,6 +137,10 @@ class QueueJob(orm.Model):
         self._change_job_state(cr, uid, ids, PENDING, context=context)
         return True
 
+    def done(self, cr, uid, ids, context=None):
+        self._change_job_state(cr, uid, ids, DONE, context=context)
+        return True
+
     def write(self, cr, uid, ids, vals, context=None):
         res = super(QueueJob, self).write(cr, uid, ids, vals, context=context)
         if vals.get('state') == 'failed':
@@ -413,4 +417,38 @@ class requeue_job(orm.TransientModel):
         form = self.browse(cr, uid, ids, context=context)
         job_ids = [job.id for job in form.job_ids]
         self.pool.get('queue.job').requeue(cr, uid, job_ids, context=context)
+        return {'type': 'ir.actions.act_window_close'}
+
+
+
+
+class done_job(orm.TransientModel):
+    _name = 'queue.done.job'
+    _description = 'Wizard to Set selection of jobs to Done'
+
+    def _get_job_ids(self, cr, uid, context=None):
+        if context is None:
+            context = {}
+        res = False
+        if (context.get('active_model') == 'queue.job' and
+                context.get('active_ids')):
+            res = context['active_ids']
+        return res
+
+    _columns = {
+        'job_ids': fields.many2many('queue.job', string='Jobs'),
+    }
+
+    _defaults = {
+        'job_ids': _get_job_ids,
+    }
+
+    def done(self, cr, uid, ids, context=None):
+        if isinstance(ids, (tuple, list)):
+            assert len(ids) == 1, "One ID expected"
+            ids = ids[0]
+
+        form = self.browse(cr, uid, ids, context=context)
+        job_ids = [job.id for job in form.job_ids]
+        self.pool.get('queue.job').done(cr, uid, job_ids, context=context)
         return {'type': 'ir.actions.act_window_close'}

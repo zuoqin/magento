@@ -679,11 +679,11 @@ def job(func):
     """
     def delay(session, model_name, *args, **kwargs):
         # """Enqueue the function. Return the uuid of the created job."""
-        # return OpenERPJobStorage(session).enqueue_resolve_args(
-        #     func,
-        #     model_name=model_name,
-        #     *args,
-        #     **kwargs)
+        return OpenERPJobStorage(session).enqueue_resolve_args(
+             func,
+             model_name=model_name,
+             *args,
+             **kwargs)
 
         priority = kwargs.pop('priority', None)
         eta = kwargs.pop('eta', None)
