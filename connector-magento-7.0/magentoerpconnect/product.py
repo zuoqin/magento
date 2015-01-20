@@ -56,7 +56,7 @@ from .connector import get_environment
 from .backend import magento
 from .related_action import unwrap_binding
 
-
+import product_images
 
 from openerp.addons.stock.wizard.stock_change_product_qty import stock_change_product_qty
 
@@ -573,6 +573,34 @@ class CatalogImageImporter(ImportSynchronizer):
         self.magento_id = magento_id
         images = self._get_images()
         images = self._sort_images(images)
+
+
+        _logger.info('retrieved %s images for product binding_id: %s', len(images), binding_id)
+
+
+        product_images_obj = self.session.pool.get('product.images')
+        magento_id = self.session.pool.get('magento.product.product').search(self.session.cr, 1, [('magento_id', '=', binding_id)])
+        #magento_obj = self.session.pool.get('magento.product.product').browse(self.session.cr, 1, magento_id[0])
+        
+        product_id = self.session.pool.get('product.product').search(self.session.cr, 1, [('magento_bind_ids', '=', magento_id)])
+
+        _logger.info('product_id: %s magento_obj.openerp_id: ', product_id[0])
+        product_images_obj_ids = self.session.pool.get('product.images').search(self.session.cr, 1, [('product_id', '=', product_id[0])])
+
+        _logger.info('product_images_obj_ids: %s.', product_images_obj_ids)
+
+
+        for image in images:
+            binary = self._get_binary_image(image)  #images.pop()
+            product_images_id = product_images_obj.create(self.session.cr,1, {'name': image['url'].split('/')[-1].split('.')[0], 'extension':'.jpg'})
+            _logger.info('product_images_id: %s', product_images_id)
+            #product_images_id.product_id = product_id[0]
+            self.session.write('product.images',
+                               product_images_id,
+                               {'file_db_store': base64.b64encode(binary),
+                               'product_id':product_id[0]})
+
+
         binary = None
         while not binary and images:
             binary = self._get_binary_image(images.pop())
@@ -1024,8 +1052,8 @@ PRODUCT_FIELDS = ('type',
 @on_record_write(model_names='magento.product.product')
 def magento_product_modified(session, model_name, record_id, vals):
     #comments - zuoqin
-    #if session.context.get('connector_no_export'):
-    #    return
+    if session.context.get('connector_no_export'):
+        return
     #if session.browse(model_name, record_id).no_stock_sync:
     #    return
 
