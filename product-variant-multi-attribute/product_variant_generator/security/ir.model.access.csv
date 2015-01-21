@@ -1,3 +1,0 @@
-"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
-"access_dimension_value_user","Read access on dimension.value for employees","model_dimension_value","base.group_user",1,0,0,0
-"access_dimension_value_sale_manager","Full rights on dimension.value for sale manager","model_dimension_value","base.group_sale_manager",1,1,1,1

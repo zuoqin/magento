@@ -152,6 +152,7 @@ class product_images(orm.Model):
         """Save a file encoded in base 64"""
         self._check_filestore(path)
         with open(path, 'w') as ofile:
+            _logger.info('ZZZZZZZZZZZ   _save_file: %s', path)
             ofile.write(base64.b64decode(b64_file))
         return True
 
@@ -160,6 +161,7 @@ class product_images(orm.Model):
         full_path = self._image_path(cr, uid, image, context=context)
         if full_path:
             return self._save_file(full_path, value)
+        _logger.info('ZZZZZZZZZZZ  _set_image  self.write')
         return self.write(cr, uid, id, {'file_db_store': value}, context=context)
 
     _columns = {
